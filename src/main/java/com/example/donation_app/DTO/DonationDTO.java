@@ -3,12 +3,15 @@ package com.example.donation_app.DTO;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.example.donation_app.Enum.DonationStatus;
+import com.example.donation_app.Enum.DonationType;
+
 public class DonationDTO {
     private Long id;
-    private String type;
+    private DonationType type;
     private Integer quantity;
     private LocalDate expiryDate;
-    private String status;
+    private DonationStatus status;
     private List<String> donationItems;
     private FeedbackDTO donorFeedback;
     private FeedbackDTO charityFeedback;
@@ -21,10 +24,10 @@ public class DonationDTO {
     public void setId(Long id) {
         this.id = id;
     }
-    public String getType() {
+    public DonationType getType() {
         return type;
     }
-    public void setType(String type) {
+    public void setType(DonationType type) {
         this.type = type;
     }
     public Integer getQuantity() {
@@ -39,10 +42,10 @@ public class DonationDTO {
     public void setExpiryDate(LocalDate expiryDate) {
         this.expiryDate = expiryDate;
     }
-    public String getStatus() {
+    public DonationStatus getStatus() {
         return status;
     }
-    public void setStatus(String status) {
+    public void setStatus(DonationStatus status) {
         this.status = status;
     }
     public List<String> getDonationItems() {
