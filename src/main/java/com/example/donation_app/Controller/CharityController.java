@@ -1,5 +1,7 @@
 package com.example.donation_app.Controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +12,9 @@ import com.example.donation_app.Model.Charity;
 import com.example.donation_app.Service.CharityService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @RestController
@@ -34,5 +39,17 @@ public class CharityController {
         Charity loggedInCharity = charityService.loginCharity(dto);
         return ResponseEntity.ok("Welcome " + loggedInCharity.getName() + "! You are logged in.");
     }
+
+    @GetMapping("/pending")
+    public ResponseEntity<List<Charity>> getPendingCharities() {
+        List<Charity> pendingCharities = charityService.getPendingCharities();
+
+        if (pendingCharities.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(pendingCharities);
+        }
+    }
+    
     
 }
