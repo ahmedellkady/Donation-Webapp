@@ -24,4 +24,10 @@ public class DonorController {
         Donor savedDonor = donorService.registerDonor(donorDTO);
         return ResponseEntity.ok("Donor registered successfully with ID: " + savedDonor.getId());
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> loginDonor(@RequestBody DonorDTO donorDTO) {
+        Donor loggedInDonor = donorService.loginDonor(donorDTO);
+        return ResponseEntity.ok("Welcome " + loggedInDonor.getName() + "! You are logged in.");
+    }
 }

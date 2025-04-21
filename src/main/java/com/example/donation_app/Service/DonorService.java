@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import com.example.donation_app.DTO.DonorDTO;
 import com.example.donation_app.Enum.Role;
 import com.example.donation_app.Exception.EmailAlreadyUsedException;
+import com.example.donation_app.Exception.InvalidCredentialsException;
+import com.example.donation_app.Exception.UserNotFoundException;
 import com.example.donation_app.Model.Donor;
 import com.example.donation_app.Repository.DonorRepository;
 
@@ -39,5 +41,15 @@ public class DonorService {
         return donorRepository.save(donor);
     }
     
+    public Donor loginDonor(DonorDTO dto) {
+        Donor donor = donorRepository.findByEmail(dto.getEmail())
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        if (!donor.getPassword().equals(dto.getPassword())) {
+            throw new InvalidCredentialsException("Invalid credentials");
+        }
+
+        return donor;
+    }
 
 }
