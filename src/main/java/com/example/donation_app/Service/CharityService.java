@@ -1,5 +1,7 @@
 package com.example.donation_app.Service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.example.donation_app.DTO.CharityDTO;
@@ -49,5 +51,9 @@ public class CharityService {
         }
 
         return charity;
+    }
+
+    public List<Charity> getPendingCharities() {
+        return charityRepository.findByStatus(VerificationStatus.PENDING);
     }
 }
