@@ -4,6 +4,8 @@ import com.example.donation_app.DTO.DonorDTO;
 import com.example.donation_app.Model.Donor;
 import com.example.donation_app.Service.DonorService;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,13 +23,13 @@ public class DonorController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerDonor(@RequestBody DonorDTO donorDTO) {
-        Donor savedDonor = donorService.registerDonor(donorDTO);
-        return ResponseEntity.ok("Donor registered successfully with ID: " + savedDonor.getId());
+        String token = donorService.registerDonor(donorDTO);
+        return ResponseEntity.ok(Map.of("token", token));
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> loginDonor(@RequestBody DonorDTO donorDTO) {
-        Donor loggedInDonor = donorService.loginDonor(donorDTO);
-        return ResponseEntity.ok("Welcome " + loggedInDonor.getName() + "! You are logged in.");
+        String loggedInDonor = donorService.loginDonor(donorDTO);
+        return ResponseEntity.ok(Map.of("token", loggedInDonor));
     }
 }

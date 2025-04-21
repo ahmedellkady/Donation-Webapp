@@ -10,18 +10,21 @@ import com.example.donation_app.Exception.InvalidCredentialsException;
 import com.example.donation_app.Exception.UserNotFoundException;
 import com.example.donation_app.Model.Donor;
 import com.example.donation_app.Repository.DonorRepository;
+import com.example.donation_app.Security.JwtUtil;
 
 @Service
 public class DonorService {
 
     private final DonorRepository donorRepository;
+    private final JwtUtil jwtUtil;
 
     @Autowired
-    public DonorService(DonorRepository donorRepository) {
+    public DonorService(DonorRepository donorRepository, JwtUtil jwtUtil) {
         this.donorRepository = donorRepository;
+        this.jwtUtil = jwtUtil;
     }
 
-    public Donor registerDonor(DonorDTO dto) {
+    public String registerDonor(DonorDTO dto) {
         Donor donor = new Donor();
 
         if (donorRepository.existsByEmail(dto.getEmail())) {
@@ -38,10 +41,12 @@ public class DonorService {
         donor.setRegisteredAt(java.time.LocalDateTime.now());
         donor.setRole(Role.DONOR);
     
-        return donorRepository.save(donor);
+        donorRepository.save(donor);
+
+        return jwtUtil.generateToken(donor.getEmail(), donor.getRole().name(), 60 * 60 * 1000);
     }
     
-    public Donor loginDonor(DonorDTO dto) {
+    public String loginDonor(DonorDTO dto) {
         Donor donor = donorRepository.findByEmail(dto.getEmail())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
@@ -49,7 +54,7 @@ public class DonorService {
             throw new InvalidCredentialsException("Invalid credentials");
         }
 
-        return donor;
+        return jwtUtil.generateToken(donor.getEmail(), donor.getRole().name(), 60 * 60 * 1000);
     }
 
 }
