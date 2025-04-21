@@ -3,10 +3,12 @@ package com.example.donation_app.DTO;
 import java.util.List;
 import java.util.Set;
 
+import com.example.donation_app.Enum.DonationType;
+
 public class CharityDTO extends UserDTO {
     private String city;
     private String neighborhood;
-    private Set<String> preferredTypes;
+    private Set<DonationType> preferredTypes;
     private List<String> uploadedDocuments;
     private String status;
     public String getCity() {
@@ -21,10 +23,10 @@ public class CharityDTO extends UserDTO {
     public void setNeighborhood(String neighborhood) {
         this.neighborhood = neighborhood;
     }
-    public Set<String> getPreferredTypes() {
+    public Set<DonationType> getPreferredTypes() {
         return preferredTypes;
     }
-    public void setPreferredTypes(Set<String> preferredTypes) {
+    public void setPreferredTypes(Set<DonationType> preferredTypes) {
         this.preferredTypes = preferredTypes;
     }
     public List<String> getUploadedDocuments() {
