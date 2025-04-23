@@ -1,6 +1,8 @@
 package com.example.donation_app.Repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.example.donation_app.Model.Charity;
 import com.example.donation_app.Model.Donation;
@@ -14,4 +16,13 @@ public interface DonationRepository extends JpaRepository<Donation, Long> {
     List<Donation> findByCharity(Charity charity);
 
     List<Donation> findByDonor(Donor donor);
+
+    @Query("""
+        SELECT d FROM Donation d
+        WHERE d.donor.id = :donorId
+        AND d.status = 'SCHEDULED'
+        AND d.pickup.scheduledDate > CURRENT_TIMESTAMP
+        ORDER BY d.pickup.scheduledDate ASC
+    """)
+    List<Donation> findUpcomingPickupForDonor(@Param("donorId") Long donorId);
 }

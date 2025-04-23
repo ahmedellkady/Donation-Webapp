@@ -3,7 +3,6 @@ package com.example.donation_app.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.donation_app.DTO.NeedDTO;
@@ -19,7 +18,6 @@ public class NeedService {
     private final NeedRepository needRepository;
     private final CharityRepository charityRepository;
 
-    @Autowired
     public NeedService(NeedRepository needRepository, CharityRepository charityRepository) {
         this.needRepository = needRepository;
         this.charityRepository = charityRepository;

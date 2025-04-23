@@ -2,7 +2,6 @@ package com.example.donation_app.Controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,7 +23,6 @@ public class NeedController {
     
     private final NeedService needService;
 
-    @Autowired
     public NeedController(NeedService needService) {
         this.needService = needService;
     }

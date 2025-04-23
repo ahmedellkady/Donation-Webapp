@@ -6,7 +6,6 @@ import com.example.donation_app.DTO.UpdateDonorProfileDTO;
 import com.example.donation_app.Model.Donor;
 import com.example.donation_app.Service.DonorService;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +15,6 @@ public class DonorController {
 
     private final DonorService donorService;
 
-    @Autowired
     public DonorController(DonorService donorService) {
         this.donorService = donorService;
     }
