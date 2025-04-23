@@ -1,6 +1,8 @@
 package com.example.donation_app.Controller;
 
+import com.example.donation_app.DTO.ChangePasswordDTO;
 import com.example.donation_app.DTO.DonorDTO;
+import com.example.donation_app.DTO.UpdateDonorProfileDTO;
 import com.example.donation_app.Model.Donor;
 import com.example.donation_app.Service.DonorService;
 
@@ -30,4 +32,25 @@ public class DonorController {
         Donor loggedInDonor = donorService.loginDonor(donorDTO);
         return ResponseEntity.ok("Welcome " + loggedInDonor.getName() + "! You are logged in.");
     }
+
+    @PutMapping("/update-profile/{donorId}")
+    public ResponseEntity<Donor> updateProfile(@PathVariable Long donorId,
+            @RequestBody UpdateDonorProfileDTO dto) {
+        Donor updated = donorService.updateDonorProfile(donorId, dto);
+        return ResponseEntity.ok(updated);
+    }
+    
+    @PutMapping("/change-password/{donorId}")
+    public ResponseEntity<String> changePassword(@PathVariable Long donorId,
+            @RequestBody ChangePasswordDTO dto) {
+        donorService.changePassword(donorId, dto);
+        return ResponseEntity.ok("Password changed successfully.");
+    }
+
+    @DeleteMapping("/delete/{donorId}")
+    public ResponseEntity<String> deleteDonor(@PathVariable Long donorId) {
+        donorService.deleteDonor(donorId);
+        return ResponseEntity.ok("Donor deleted successfully.");
+    }
+
 }

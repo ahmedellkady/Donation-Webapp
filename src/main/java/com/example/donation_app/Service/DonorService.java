@@ -3,7 +3,9 @@ package com.example.donation_app.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.donation_app.DTO.ChangePasswordDTO;
 import com.example.donation_app.DTO.DonorDTO;
+import com.example.donation_app.DTO.UpdateDonorProfileDTO;
 import com.example.donation_app.Enum.Role;
 import com.example.donation_app.Exception.EmailAlreadyUsedException;
 import com.example.donation_app.Exception.InvalidCredentialsException;
@@ -50,6 +52,39 @@ public class DonorService {
         }
 
         return donor;
+    }
+
+    public Donor updateDonorProfile(Long donorId, UpdateDonorProfileDTO dto) {
+        Donor donor = donorRepository.findById(donorId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        donor.setName(dto.getName());
+        donor.setPhone(dto.getPhone());
+        donor.setCity(dto.getCity());
+        donor.setNeighborhood(dto.getNeighborhood());
+        donor.setPreferredTypes(dto.getPreferredTypes());
+
+        return donorRepository.save(donor);
+    }
+
+    public void changePassword(Long donorId, ChangePasswordDTO dto) {
+        Donor donor = donorRepository.findById(donorId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        if (!donor.getPassword().equals(dto.getCurrentPassword())) {
+            throw new InvalidCredentialsException("Invalid old password");
+        }
+
+        if (dto.getCurrentPassword().equals(dto.getNewPassword())) {
+            throw new IllegalArgumentException("New password cannot be the same as the old password");
+        }
+
+        donor.setPassword(dto.getNewPassword());
+        donorRepository.save(donor);
+    }
+
+    public void deleteDonor(Long donorId) {
+        donorRepository.deleteById(donorId);
     }
 
 }
