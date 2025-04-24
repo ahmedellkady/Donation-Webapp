@@ -12,8 +12,7 @@ import com.example.donation_app.Enum.Role;
 import com.example.donation_app.Enum.VerificationStatus;
 import com.example.donation_app.Exception.EmailAlreadyUsedException;
 import com.example.donation_app.Exception.InvalidCredentialsException;
-import com.example.donation_app.Exception.NoPendingCharitiesException;
-import com.example.donation_app.Exception.UserNotFoundException;
+import com.example.donation_app.Exception.ResourceNotFoundException;
 import com.example.donation_app.Model.Charity;
 import com.example.donation_app.Repository.CharityRepository;
 
@@ -65,7 +64,7 @@ public class CharityService {
 
     public CharityDTO loginCharity(LoginDTO dto) {
         Charity charity = charityRepository.findByEmail(dto.getEmail())
-          .orElseThrow(() -> new UserNotFoundException("Charity not found"));
+          .orElseThrow(() -> new ResourceNotFoundException("Charity not found"));
 
         if (!charity.getPassword().equals(dto.getPassword())) {
             throw new InvalidCredentialsException("Invalid password");
@@ -78,7 +77,7 @@ public class CharityService {
         List<Charity> charities = charityRepository.findByStatus(VerificationStatus.PENDING);
 
         if (charities.isEmpty()) {
-            throw new NoPendingCharitiesException("No pending charities found");
+            throw new ResourceNotFoundException("No pending charities found");
         }
 
         return charities.stream().map(this::map).collect(Collectors.toList());

@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import com.example.donation_app.Enum.DonationType;
 import com.example.donation_app.Enum.NeedUrgency;
 import com.example.donation_app.Enum.VerificationStatus;
-import com.example.donation_app.Model.Charity;
 
 public class NeedDTO {
     private Long id;
@@ -64,8 +63,4 @@ public class NeedDTO {
     public void setCharityName(String charityName) {
         this.charityName = charityName;
     }
-    
-    
-
-    
 }
