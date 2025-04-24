@@ -11,6 +11,15 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    // @ExceptionHandler(NoPendingCharitiesException.class)
+    // public ResponseEntity<Object> handleNoPendingCharities(NoPendingCharitiesException ex) {
+    //     Map<String, Object> body = new HashMap<>();
+    //     body.put("timestamp", LocalDateTime.now());
+    //     body.put("error", "Not Found");
+    //     body.put("message", ex.getMessage());
+    //     return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+    // }
+
     @ExceptionHandler(NoDonationFoundException.class)
     public ResponseEntity<Object> handleNoDonationFound(NoDonationFoundException ex) {
         Map<String, Object> body = new HashMap<>();
