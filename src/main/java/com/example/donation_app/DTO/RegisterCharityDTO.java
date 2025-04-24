@@ -6,12 +6,41 @@ import java.util.Set;
 import com.example.donation_app.Enum.DonationType;
 import com.example.donation_app.Enum.VerificationStatus;
 
-public class CharityDTO extends UserDTO {
+public class RegisterCharityDTO {
+
+    private String name;
+    private String email;
+    private String phone;
+    private String password;
     private String city;
     private String neighborhood;
     private Set<DonationType> preferredTypes;
     private List<String> uploadedDocuments;
     private VerificationStatus status;
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getEmail() {
+        return email;
+    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    public String getPhone() {
+        return phone;
+    }
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+    public String getPassword() {
+        return password;
+    }
+    public void setPassword(String password) {
+        this.password = password;
+    }
     public String getCity() {
         return city;
     }
