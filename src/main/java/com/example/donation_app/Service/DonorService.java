@@ -4,6 +4,8 @@ import org.springframework.stereotype.Service;
 
 import com.example.donation_app.DTO.ChangePasswordDTO;
 import com.example.donation_app.DTO.DonorDTO;
+import com.example.donation_app.DTO.LoginDTO;
+import com.example.donation_app.DTO.RegisterDonorDTO;
 import com.example.donation_app.DTO.UpdateDonorProfileDTO;
 import com.example.donation_app.Enum.Role;
 import com.example.donation_app.Exception.EmailAlreadyUsedException;
@@ -21,13 +23,25 @@ public class DonorService {
         this.donorRepository = donorRepository;
     }
 
-    public Donor registerDonor(DonorDTO dto) {
-        Donor donor = new Donor();
+    private DonorDTO map(Donor donor) {
+        DonorDTO dto = new DonorDTO();
+        dto.setId(donor.getId());
+        dto.setName(donor.getName());
+        dto.setEmail(donor.getEmail());
+        dto.setPhone(donor.getPhone());
+        dto.setCity(donor.getCity());
+        dto.setNeighborhood(donor.getNeighborhood());
+        dto.setRegisteredAt(donor.getRegisteredAt());
+        dto.setPreferredTypes(donor.getPreferredTypes());
+        return dto;
+    }
 
+    public DonorDTO registerDonor(RegisterDonorDTO dto) {
         if (donorRepository.existsByEmail(dto.getEmail())) {
             throw new EmailAlreadyUsedException("Email already used");
         }
 
+        Donor donor = new Donor();
         donor.setName(dto.getName());
         donor.setEmail(dto.getEmail());
         donor.setPhone(dto.getPhone());
@@ -38,10 +52,12 @@ public class DonorService {
         donor.setRegisteredAt(java.time.LocalDateTime.now());
         donor.setRole(Role.DONOR);
     
-        return donorRepository.save(donor);
+        donorRepository.save(donor);
+
+        return map(donor);
     }
     
-    public Donor loginDonor(DonorDTO dto) {
+    public DonorDTO loginDonor(LoginDTO dto) {
         Donor donor = donorRepository.findByEmail(dto.getEmail())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
@@ -49,10 +65,10 @@ public class DonorService {
             throw new InvalidCredentialsException("Invalid credentials");
         }
 
-        return donor;
+        return map(donor);
     }
 
-    public Donor updateDonorProfile(Long donorId, UpdateDonorProfileDTO dto) {
+    public DonorDTO updateDonorProfile(Long donorId, UpdateDonorProfileDTO dto) {
         Donor donor = donorRepository.findById(donorId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
@@ -62,7 +78,9 @@ public class DonorService {
         donor.setNeighborhood(dto.getNeighborhood());
         donor.setPreferredTypes(dto.getPreferredTypes());
 
-        return donorRepository.save(donor);
+        donorRepository.save(donor);
+
+        return map(donor);
     }
 
     public void changePassword(Long donorId, ChangePasswordDTO dto) {
