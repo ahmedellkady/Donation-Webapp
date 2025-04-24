@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 
 
-
 @RestController
 @RequestMapping("api/needs")
 public class NeedController {
@@ -42,5 +41,11 @@ public class NeedController {
         }
     }
     
+    @GetMapping("charity/{charityId}")
+    public ResponseEntity<List<NeedDTO>> getCharityNeeds(@PathVariable Long charityId) {
+        List<NeedDTO> needs = needService.getNeedsForCharity(charityId);
+        
+        return ResponseEntity.ok(needs);
+    }
     
 }

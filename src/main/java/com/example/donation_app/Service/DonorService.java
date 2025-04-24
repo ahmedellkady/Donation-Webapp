@@ -10,7 +10,7 @@ import com.example.donation_app.DTO.UpdateDonorProfileDTO;
 import com.example.donation_app.Enum.Role;
 import com.example.donation_app.Exception.EmailAlreadyUsedException;
 import com.example.donation_app.Exception.InvalidCredentialsException;
-import com.example.donation_app.Exception.UserNotFoundException;
+import com.example.donation_app.Exception.ResourceNotFoundException;
 import com.example.donation_app.Model.Donor;
 import com.example.donation_app.Repository.DonorRepository;
 
@@ -59,7 +59,7 @@ public class DonorService {
     
     public DonorDTO loginDonor(LoginDTO dto) {
         Donor donor = donorRepository.findByEmail(dto.getEmail())
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         if (!donor.getPassword().equals(dto.getPassword())) {
             throw new InvalidCredentialsException("Invalid credentials");
@@ -70,7 +70,7 @@ public class DonorService {
 
     public DonorDTO updateDonorProfile(Long donorId, UpdateDonorProfileDTO dto) {
         Donor donor = donorRepository.findById(donorId)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         donor.setName(dto.getName());
         donor.setPhone(dto.getPhone());
@@ -85,7 +85,7 @@ public class DonorService {
 
     public void changePassword(Long donorId, ChangePasswordDTO dto) {
         Donor donor = donorRepository.findById(donorId)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         if (!donor.getPassword().equals(dto.getCurrentPassword())) {
             throw new InvalidCredentialsException("Invalid old password");

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.donation_app.DTO.NeedDTO;
 import com.example.donation_app.Enum.VerificationStatus;
+import com.example.donation_app.Exception.ResourceNotFoundException;
 import com.example.donation_app.Model.Charity;
 import com.example.donation_app.Model.Need;
 import com.example.donation_app.Repository.CharityRepository;
@@ -55,6 +56,17 @@ public class NeedService {
 
     public List<NeedDTO> getPendingNeeds() {
         List<Need> needs = needRepository.findByStatus(VerificationStatus.PENDING);
+        return needs.stream().map(this::map).toList();
+    }
+
+    public List<NeedDTO> getNeedsForCharity(Long charityId) {
+        Charity charity = charityRepository.findById(charityId).orElse(null);
+        List<Need> needs = needRepository.findByCharity(charity);
+
+        if (needs.isEmpty()) {
+            throw new ResourceNotFoundException("No needs found for this charity");
+        }
+
         return needs.stream().map(this::map).toList();
     }
 }

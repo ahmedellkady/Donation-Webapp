@@ -9,7 +9,7 @@ import com.example.donation_app.DTO.CreateDonationDTO;
 import com.example.donation_app.DTO.DonationDetailsDTO;
 import com.example.donation_app.DTO.PickupDTO;
 import com.example.donation_app.Enum.DonationStatus;
-import com.example.donation_app.Exception.NoDonationFoundException;
+import com.example.donation_app.Exception.ResourceNotFoundException;
 import com.example.donation_app.Model.Charity;
 import com.example.donation_app.Model.Donation;
 import com.example.donation_app.Model.Donor;
@@ -95,7 +95,7 @@ public class DonationService {
         List<Donation> donations = donationRepository.findByDonor(donorRepository.findById(donorId).get());
 
         if (donations.isEmpty()) {
-            throw new NoDonationFoundException("No donation found for this donor");
+            throw new ResourceNotFoundException("No donation found for this donor");
         }
 
         return donations.stream().map(this::mapToDetailsDTO).collect(Collectors.toList());
@@ -105,7 +105,7 @@ public class DonationService {
         List<Donation> donations = donationRepository.findByCharity(charityRepository.findById(charityId).get());
         
         if (donations.isEmpty()) {
-            throw new NoDonationFoundException("No donations found for this charity");
+            throw new ResourceNotFoundException("No donations found for this charity");
         }
         
         return donations.stream().map(this::mapToDetailsDTO).collect(Collectors.toList());
@@ -115,7 +115,7 @@ public class DonationService {
         List<Donation> donations = donationRepository.findUpcomingPickupForDonor(donorId);
 
         if (donations.isEmpty()) {
-            throw new NoDonationFoundException("No upcoming pickups found for this donor");
+            throw new ResourceNotFoundException("No upcoming pickups found for this donor");
         }
 
         return mapToDetailsDTO(donations.get(0));
