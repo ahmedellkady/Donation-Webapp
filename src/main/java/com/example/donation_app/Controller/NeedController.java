@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.donation_app.DTO.NeedDTO;
-import com.example.donation_app.Model.Need;
 import com.example.donation_app.Service.NeedService;
 
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,14 +27,14 @@ public class NeedController {
     }
 
     @PostMapping("/post/{charityId}")
-    public String postMethodName(@PathVariable Long charityId, @RequestBody NeedDTO dto) {
-        Need need = needService.postNeed(charityId, dto);
-        return "Need posted successfully with id: " + need.getId();
+    public ResponseEntity<NeedDTO> postMethodName(@PathVariable Long charityId, @RequestBody NeedDTO dto) {
+        NeedDTO need = needService.postNeed(charityId, dto);
+        return ResponseEntity.ok(need);
     }
 
     @GetMapping("pending-needs")
-    public ResponseEntity<List<Need>> getPendingNeeds() {
-        List<Need> needs = needService.getPendingNeeds();
+    public ResponseEntity<List<NeedDTO>> getPendingNeeds() {
+        List<NeedDTO> needs = needService.getPendingNeeds();
         if (needs.isEmpty()) {
             return ResponseEntity.noContent().build();
         } else {

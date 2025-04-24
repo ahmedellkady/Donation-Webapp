@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import com.example.donation_app.Enum.DonationType;
 import com.example.donation_app.Enum.NeedUrgency;
 import com.example.donation_app.Enum.VerificationStatus;
+import com.example.donation_app.Model.Charity;
 
 public class NeedDTO {
     private Long id;
@@ -14,7 +15,7 @@ public class NeedDTO {
     private LocalDateTime createdAt;
     private VerificationStatus status;
     private NeedUrgency urgency;
-    private Long charityId;
+    private String charityName;
     public Long getId() {
         return id;
     }
@@ -57,12 +58,14 @@ public class NeedDTO {
     public void setUrgency(NeedUrgency urgency) {
         this.urgency = urgency;
     }
-    public Long getCharityId() {
-        return charityId;
+    public String getCharityName() {
+        return charityName;
     }
-    public void setCharityId(Long charityId) {
-        this.charityId = charityId;
+    public void setCharityName(String charityName) {
+        this.charityName = charityName;
     }
+    
+    
 
     
 }

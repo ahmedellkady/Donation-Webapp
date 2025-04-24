@@ -21,9 +21,23 @@ public class NeedService {
     public NeedService(NeedRepository needRepository, CharityRepository charityRepository) {
         this.needRepository = needRepository;
         this.charityRepository = charityRepository;
+    } 
+
+    private NeedDTO map(Need need) {
+        NeedDTO dto = new NeedDTO();
+        dto.setId(need.getId());
+        dto.setDescription(need.getDescription());
+        dto.setType(need.getType());
+        dto.setQuantity(need.getQuantity());
+        dto.setCreatedAt(need.getCreatedAt());
+        dto.setStatus(need.getStatus());
+        dto.setUrgency(need.getUrgency());
+        dto.setCharityName(need.getCharity().getName());
+
+        return dto;
     }
 
-    public Need postNeed(Long charityId, NeedDTO dto) {
+    public NeedDTO postNeed(Long charityId, NeedDTO dto) {
         Charity charity = charityRepository.findById(charityId).orElse(null);
 
         Need need = new Need();
@@ -35,11 +49,12 @@ public class NeedService {
         need.setUrgency(dto.getUrgency());
         need.setCharity(charity);
 
-        return needRepository.save(need);
-
+        needRepository.save(need);
+        return map(need);
     }
 
-    public List<Need> getPendingNeeds() {
-        return needRepository.findByStatus(VerificationStatus.PENDING);
+    public List<NeedDTO> getPendingNeeds() {
+        List<Need> needs = needRepository.findByStatus(VerificationStatus.PENDING);
+        return needs.stream().map(this::map).toList();
     }
 }
