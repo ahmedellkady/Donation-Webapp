@@ -1,7 +1,6 @@
 package com.example.donation_app.DTO;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 
 import com.example.donation_app.Enum.DonationStatus;
@@ -14,10 +13,11 @@ public class DonationDetailsDTO {
     private List<String> donationItems;
     private DonationStatus status;
     private LocalDate expiryDate;
-    private LocalDateTime scheduledDate;
-    private String pickupLocation;
-    private String charityName;
+    private FeedbackDTO donorFeedback;
+    private FeedbackDTO charityFeedback;
     private String donorName;
+    private String charityName;
+    private PickupDTO pickup;
 
     public Long getId() {
         return id;
@@ -55,18 +55,7 @@ public class DonationDetailsDTO {
     public void setExpiryDate(LocalDate expiryDate) {
         this.expiryDate = expiryDate;
     }
-    public LocalDateTime getScheduledDate() {
-        return scheduledDate;
-    }
-    public void setScheduledDate(LocalDateTime scheduledDate) {
-        this.scheduledDate = scheduledDate;
-    }
-    public String getPickupLocation() {
-        return pickupLocation;
-    }
-    public void setPickupLocation(String pickupLocation) {
-        this.pickupLocation = pickupLocation;
-    }
+    
     public String getCharityName() {
         return charityName;
     }
@@ -79,7 +68,23 @@ public class DonationDetailsDTO {
     public void setDonorName(String donorName) {
         this.donorName = donorName;
     }
-    
-
+    public FeedbackDTO getDonorFeedback() {
+        return donorFeedback;
+    }
+    public void setDonorFeedback(FeedbackDTO donorFeedback) {
+        this.donorFeedback = donorFeedback;
+    }
+    public FeedbackDTO getCharityFeedback() {
+        return charityFeedback;
+    }
+    public void setCharityFeedback(FeedbackDTO charityFeedback) {
+        this.charityFeedback = charityFeedback;
+    }
+    public PickupDTO getPickup() {
+        return pickup;
+    }
+    public void setPickup(PickupDTO pickup) {
+        this.pickup = pickup;
+    }
     
 }
