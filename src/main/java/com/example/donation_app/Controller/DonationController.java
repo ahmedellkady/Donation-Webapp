@@ -6,9 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.donation_app.DTO.DonationDTO;
+import com.example.donation_app.DTO.CreateDonationDTO;
 import com.example.donation_app.DTO.DonationDetailsDTO;
-import com.example.donation_app.Model.Donation;
 import com.example.donation_app.Service.DonationService;
 
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,33 +28,34 @@ public class DonationController {
     }
 
     @PostMapping("/add/{donorId}")
-    public ResponseEntity<Donation> addDonation(@PathVariable Long donorId, @RequestBody DonationDTO dto) {
-        Donation donation = donationService.addDonation(donorId, dto);
+    public ResponseEntity<DonationDetailsDTO> addDonation(@PathVariable Long donorId,
+            @RequestBody CreateDonationDTO dto) {
+        DonationDetailsDTO donation = donationService.addDonation(donorId, dto);
         return ResponseEntity.ok(donation);
-    }
-
-    @GetMapping("/history/{donorId}")
-    public ResponseEntity<List<Donation>> getDonationHistory(@PathVariable Long donorId) {
-        List<Donation> donations = donationService.getDonationHistory(donorId);
-        return ResponseEntity.ok(donations);
     }
     
-    @PutMapping("/cancel/{donationId}")
-    public ResponseEntity<Donation> cancelDonation(@PathVariable Long donationId) {
-        Donation cancelled = donationService.cancelDonation(donationId);
-        return ResponseEntity.ok(cancelled);
-    }
-
-    @GetMapping("/upcoming-pickup/{donorId}")
-    public ResponseEntity<Donation> getUpcomingPickup(@PathVariable Long donorId) {
-        Donation donation = donationService.getUpcomingPickup(donorId);
-        return ResponseEntity.ok(donation);
-    }
-
     @GetMapping("/details/{donationId}")
     public ResponseEntity<DonationDetailsDTO> getDonationDetails(@PathVariable Long donationId) {
         DonationDetailsDTO details = donationService.getDonationDetails(donationId);
         return ResponseEntity.ok(details);
+    }
+
+    @GetMapping("/history/{donorId}")
+    public ResponseEntity<List<DonationDetailsDTO>> getDonationHistory(@PathVariable Long donorId) {
+        List<DonationDetailsDTO> donations = donationService.getDonationsForDonor(donorId);
+        return ResponseEntity.ok(donations);
+    }
+
+    @GetMapping("/charity/{charityId}")
+    public ResponseEntity<List<DonationDetailsDTO>> getDonationsForCharity(@PathVariable Long charityId) {
+        List<DonationDetailsDTO> donations = donationService.getDonationsForCharity(charityId);
+        return ResponseEntity.ok(donations);
+    }
+
+    @GetMapping("/upcoming-pickup/{donorId}")
+    public ResponseEntity<DonationDetailsDTO> getUpcomingPickup(@PathVariable Long donorId) {
+        DonationDetailsDTO donation = donationService.getUpcomingPickup(donorId);
+        return ResponseEntity.ok(donation);
     }
 
     @PutMapping("/confirm-pickup/{donationId}")
@@ -64,10 +64,9 @@ public class DonationController {
         return ResponseEntity.ok(confirmed);
     }
 
-    @GetMapping("/charity/{charityId}")
-    public ResponseEntity<List<DonationDetailsDTO>> getDonationsForCharity(@PathVariable Long charityId) {
-        List<DonationDetailsDTO> donations = donationService.getDonationsForCharity(charityId);
-        return ResponseEntity.ok(donations);
+    @PutMapping("/cancel/{donationId}")
+    public ResponseEntity<DonationDetailsDTO> cancelDonation(@PathVariable Long donationId) {
+        DonationDetailsDTO cancelled = donationService.cancelDonation(donationId);
+        return ResponseEntity.ok(cancelled);
     }
-    
 }
