@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.example.donation_app.DTO.CharityDTO;
 import com.example.donation_app.DTO.LoginDTO;
 import com.example.donation_app.DTO.RegisterCharityDTO;
+import com.example.donation_app.Enum.DonationType;
 import com.example.donation_app.Enum.Role;
 import com.example.donation_app.Enum.VerificationStatus;
 import com.example.donation_app.Exception.EmailAlreadyUsedException;
@@ -18,7 +19,7 @@ import com.example.donation_app.Repository.CharityRepository;
 
 @Service
 public class CharityService {
-    
+
     private final CharityRepository charityRepository;
 
     public CharityService(CharityRepository charityRepository) {
@@ -64,13 +65,46 @@ public class CharityService {
 
     public CharityDTO loginCharity(LoginDTO dto) {
         Charity charity = charityRepository.findByEmail(dto.getEmail())
-          .orElseThrow(() -> new ResourceNotFoundException("Charity not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Charity not found"));
 
         if (!charity.getPassword().equals(dto.getPassword())) {
             throw new InvalidCredentialsException("Invalid password");
         }
 
         return map(charity);
+    }
+
+    public CharityDTO getCharity(Long charityId) {
+        Charity charity = charityRepository.findById(charityId)
+                .orElseThrow(() -> new ResourceNotFoundException("Charity not found"));
+
+        return map(charity);
+    }
+
+    public List<CharityDTO> getAllCharities() {
+        List<Charity> charities = charityRepository.findByStatus(VerificationStatus.APPROVED);
+
+        if (charities.isEmpty()) {
+            throw new ResourceNotFoundException("No charities found");
+        }
+
+        return charities.stream().map(this::map).collect(Collectors.toList());
+    }
+
+    public List<CharityDTO> filterCharities(String city, DonationType category) {
+        List<Charity> charities = charityRepository.findByStatus(VerificationStatus.APPROVED);
+
+        List<Charity> filtered = charities.stream()
+                .filter(c -> c != null)
+                .filter(c -> city == null || (c.getCity() != null && c.getCity().equalsIgnoreCase(city)))
+                .filter(c -> category == null
+                        || (c.getPreferredTypes() != null && c.getPreferredTypes().contains(category)))
+                .toList();
+
+        return filtered.stream()
+                .filter(c -> c.getName() != null)
+                .map(this::map)
+                .toList();
     }
 
     public List<CharityDTO> getPendingCharities() {

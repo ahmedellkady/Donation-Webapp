@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.example.donation_app.DTO.NeedDTO;
+import com.example.donation_app.Enum.DonationType;
+import com.example.donation_app.Enum.NeedUrgency;
 import com.example.donation_app.Enum.VerificationStatus;
 import com.example.donation_app.Exception.ResourceNotFoundException;
 import com.example.donation_app.Model.Charity;
@@ -15,14 +17,14 @@ import com.example.donation_app.Repository.NeedRepository;
 
 @Service
 public class NeedService {
-    
+
     private final NeedRepository needRepository;
     private final CharityRepository charityRepository;
 
     public NeedService(NeedRepository needRepository, CharityRepository charityRepository) {
         this.needRepository = needRepository;
         this.charityRepository = charityRepository;
-    } 
+    }
 
     private NeedDTO map(Need need) {
         NeedDTO dto = new NeedDTO();
@@ -52,6 +54,40 @@ public class NeedService {
 
         needRepository.save(need);
         return map(need);
+    }
+
+    public NeedDTO getNeed(Long id) {
+        Need need = needRepository.findById(id).orElse(null);
+
+        if (need == null) {
+            throw new ResourceNotFoundException("Need not found");
+        }
+
+        return map(need);
+    }
+
+    public List<NeedDTO> getNeeds() {
+        List<Need> needs = needRepository.findByStatus(VerificationStatus.APPROVED);
+
+        if (needs.isEmpty()) {
+            throw new ResourceNotFoundException("No needs found");
+        }
+
+        return needs.stream().map(this::map).toList();
+    }
+
+    public List<NeedDTO> filterNeeds(String city, DonationType category, NeedUrgency urgency) {
+        List<Need> needs = needRepository.findByStatus(VerificationStatus.APPROVED);
+
+        List<Need> filtered = needs.stream()
+                .filter(n -> n != null)
+                .filter(n -> city == null || (n.getCharity() != null && n.getCharity().getCity() != null
+                        && n.getCharity().getCity().equalsIgnoreCase(city)))
+                .filter(n -> category == null || (n.getType() != null && n.getType().equals(category)))
+                .filter(n -> urgency == null || (n.getUrgency() != null && n.getUrgency().equals(urgency)))
+                .toList();
+
+        return filtered.stream().map(this::map).toList();
     }
 
     public List<NeedDTO> getPendingNeeds() {
