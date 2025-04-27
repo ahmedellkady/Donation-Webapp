@@ -4,9 +4,12 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.donation_app.DTO.NeedDTO;
+import com.example.donation_app.Enum.DonationType;
+import com.example.donation_app.Enum.NeedUrgency;
 import com.example.donation_app.Service.NeedService;
 
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,11 +17,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 
-
 @RestController
 @RequestMapping("api/needs")
 public class NeedController {
-    
+
     private final NeedService needService;
 
     public NeedController(NeedService needService) {
@@ -31,6 +33,46 @@ public class NeedController {
         return ResponseEntity.ok(need);
     }
 
+    @GetMapping("/all-needs")
+    public ResponseEntity<List<NeedDTO>> getNeeds() {
+        List<NeedDTO> needs = needService.getNeeds();
+        return ResponseEntity.ok(needs);
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<List<NeedDTO>> filterNeeds(
+            @RequestParam(required = false) String city,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String urgency) {
+
+        DonationType donationType = null;
+        NeedUrgency needUrgency = null;
+
+        if (category != null && !category.isBlank()) {
+            try {
+                donationType = DonationType.valueOf(category.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                return ResponseEntity.badRequest().body(List.of()); // Invalid category string
+            }
+        }
+
+        if (urgency != null && !urgency.isBlank()) {
+            try {
+                needUrgency = NeedUrgency.valueOf(urgency.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                return ResponseEntity.badRequest().body(List.of()); // Invalid urgency string
+            }
+        }
+
+        List<NeedDTO> needs = needService.filterNeeds(city, donationType, needUrgency);
+
+        if (needs.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(needs);
+    }
+
     @GetMapping("pending-needs")
     public ResponseEntity<List<NeedDTO>> getPendingNeeds() {
         List<NeedDTO> needs = needService.getPendingNeeds();
@@ -40,12 +82,12 @@ public class NeedController {
             return ResponseEntity.ok(needs);
         }
     }
-    
+
     @GetMapping("charity/{charityId}")
     public ResponseEntity<List<NeedDTO>> getCharityNeeds(@PathVariable Long charityId) {
         List<NeedDTO> needs = needService.getNeedsForCharity(charityId);
-        
+
         return ResponseEntity.ok(needs);
     }
-    
+
 }
