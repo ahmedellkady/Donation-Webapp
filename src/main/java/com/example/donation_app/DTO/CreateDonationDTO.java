@@ -1,7 +1,6 @@
 package com.example.donation_app.DTO;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import com.example.donation_app.Enum.DonationType;
 
@@ -9,7 +8,7 @@ public class CreateDonationDTO {
     private DonationType type;
     private Integer quantity;
     private LocalDate expiryDate;
-    private List<String> donationItems;
+    private String description;
     private Long charityId;
     private PickupDTO pickup;
     
@@ -31,11 +30,11 @@ public class CreateDonationDTO {
     public void setExpiryDate(LocalDate expiryDate) {
         this.expiryDate = expiryDate;
     }
-    public List<String> getDonationItems() {
-        return donationItems;
+    public String getDescription() {
+        return description;
     }
-    public void setDonationItems(List<String> donationItems) {
-        this.donationItems = donationItems;
+    public void setDescription(String description) {
+        this.description = description;
     }
     public Long getCharityId() {
         return charityId;

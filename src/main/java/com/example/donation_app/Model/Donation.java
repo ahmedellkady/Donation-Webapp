@@ -1,7 +1,6 @@
 package com.example.donation_app.Model;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import com.example.donation_app.Enum.DonationStatus;
 import com.example.donation_app.Enum.DonationType;
@@ -28,10 +27,7 @@ public class Donation {
     @Column(name = "donation_status")
     private DonationStatus status;
 
-    @ElementCollection
-    @CollectionTable(name = "donation_items", joinColumns = @JoinColumn(name = "donation_id"))
-    @Column(name = "item")
-    private List<String> donationItems;
+    private String description;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "donor_feedback_id")
@@ -93,12 +89,12 @@ public class Donation {
         this.status = status;
     }
 
-    public List<String> getDonationItems() {
-        return donationItems;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDonationItems(List<String> donationItems) {
-        this.donationItems = donationItems;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Feedback getDonorFeedback() {
