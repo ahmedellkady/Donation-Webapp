@@ -8,7 +8,7 @@ import com.example.donation_app.Enum.VerificationStatus;
 
 public class CharityDTO extends UserDTO {
     private String city;
-    private String neighborhood;
+    private String description;
     private Set<DonationType> preferredTypes;
     private List<String> uploadedDocuments;
     private VerificationStatus status;
@@ -18,11 +18,11 @@ public class CharityDTO extends UserDTO {
     public void setCity(String city) {
         this.city = city;
     }
-    public String getNeighborhood() {
-        return neighborhood;
+    public String getDescription() {
+        return description;
     }
-    public void setNeighborhood(String neighborhood) {
-        this.neighborhood = neighborhood;
+    public void setDescription(String description) {
+        this.description = description;
     }
     public Set<DonationType> getPreferredTypes() {
         return preferredTypes;

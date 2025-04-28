@@ -34,7 +34,7 @@ public class CharityService {
         dto.setEmail(charity.getEmail());
         dto.setPhone(charity.getPhone());
         dto.setCity(charity.getCity());
-        dto.setNeighborhood(charity.getNeighborhood());
+        dto.setDescription(charity.getDescription());
         dto.setPreferredTypes(charity.getPreferredTypes());
         dto.setStatus(charity.getStatus());
 
@@ -53,7 +53,7 @@ public class CharityService {
         charity.setPhone(dto.getPhone());
         charity.setPassword(dto.getPassword());
         charity.setCity(dto.getCity());
-        charity.setNeighborhood(dto.getNeighborhood());
+        charity.setDescription(dto.getDescription());
         charity.setPreferredTypes(dto.getPreferredTypes());
         charity.setStatus(VerificationStatus.PENDING);
         charity.setRole(Role.CHARITY);

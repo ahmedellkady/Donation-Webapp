@@ -40,6 +40,12 @@ public class CharityController {
         return ResponseEntity.ok(loggedInCharity);
     }
 
+    @GetMapping("/{charityId}")
+    public ResponseEntity<CharityDTO> getCharity(@PathVariable Long charityId) {
+        CharityDTO charity = charityService.getCharity(charityId);
+        return ResponseEntity.ok(charity);
+    }
+
     @GetMapping("/all")
     public ResponseEntity<List<CharityDTO>> getAllCharities() {
         List<CharityDTO> charities = charityService.getAllCharities();

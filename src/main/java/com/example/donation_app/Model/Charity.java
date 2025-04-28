@@ -13,7 +13,7 @@ public class Charity extends User {
 
     private String city;
 
-    private String neighborhood;
+    private String description;
 
     @ElementCollection(targetClass = DonationType.class)
     @Enumerated(EnumType.STRING)
@@ -44,12 +44,12 @@ public class Charity extends User {
         this.city = city;
     }
 
-    public String getNeighborhood() {
-        return neighborhood;
+    public String getDescription() {
+        return description;
     }
 
-    public void setNeighborhood(String neighborhood) {
-        this.neighborhood = neighborhood;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Set<DonationType> getPreferredTypes() {
