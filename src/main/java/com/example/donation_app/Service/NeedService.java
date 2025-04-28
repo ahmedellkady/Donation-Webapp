@@ -36,6 +36,7 @@ public class NeedService {
         dto.setStatus(need.getStatus());
         dto.setUrgency(need.getUrgency());
         dto.setCharityName(need.getCharity().getName());
+        dto.setCity(need.getCharity().getCity());
 
         return dto;
     }

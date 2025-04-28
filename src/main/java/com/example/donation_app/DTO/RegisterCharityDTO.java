@@ -13,7 +13,7 @@ public class RegisterCharityDTO {
     private String phone;
     private String password;
     private String city;
-    private String neighborhood;
+    private String description;
     private Set<DonationType> preferredTypes;
     private List<String> uploadedDocuments;
     private VerificationStatus status;
@@ -47,11 +47,11 @@ public class RegisterCharityDTO {
     public void setCity(String city) {
         this.city = city;
     }
-    public String getNeighborhood() {
-        return neighborhood;
+    public String getDescription() {
+        return description;
     }
-    public void setNeighborhood(String neighborhood) {
-        this.neighborhood = neighborhood;
+    public void setDescription(String description) {
+        this.description = description;
     }
     public Set<DonationType> getPreferredTypes() {
         return preferredTypes;
