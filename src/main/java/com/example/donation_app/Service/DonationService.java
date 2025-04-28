@@ -48,7 +48,7 @@ public class DonationService {
         dto.setId(donation.getId());
         dto.setType(donation.getType());
         dto.setQuantity(donation.getQuantity());
-        dto.setDonationItems(donation.getDonationItems());
+        dto.setDescription(donation.getDescription());
         dto.setStatus(donation.getStatus());
         dto.setExpiryDate(donation.getExpiryDate());
         dto.setCharityName(donation.getCharity().getName());
@@ -65,8 +65,9 @@ public class DonationService {
         Donation donation = new Donation();
         donation.setType(dto.getType());
         donation.setQuantity(dto.getQuantity());
-        donation.setExpiryDate(dto.getExpiryDate());
-        donation.setDonationItems(dto.getDonationItems());
+        // donation.setExpiryDate(dto.getExpiryDate());
+        // donation.setDonationItems(dto.getDonationItems());
+        donation.setDescription(dto.getDescription());
         donation.setStatus(DonationStatus.PENDING);
         donation.setDonor(donor);
         donation.setCharity(charity);
