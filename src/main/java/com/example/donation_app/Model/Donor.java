@@ -27,6 +27,12 @@ public class Donor extends User {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "donor")
     private List<Donation> donations;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "donor")
+    private List<DonorActivity> activities;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "donor")
+    private List<DonorSession> sessions;
+
     public String getCity() {
         return city;
     }
@@ -67,5 +73,12 @@ public class Donor extends User {
         this.donations = donations;
     }
 
-    
+    public List<DonorActivity> getActivities() {
+        return activities;
+    }
+
+    public void setActivities(List<DonorActivity> activities) {
+        this.activities = activities;
+    }
+
 }
