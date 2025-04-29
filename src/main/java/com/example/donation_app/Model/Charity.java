@@ -36,6 +36,9 @@ public class Charity extends User {
     @OneToMany(mappedBy = "charity", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Donation> donations;
 
+    @OneToMany(mappedBy = "charity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DonorActivity> activities;
+
     public String getCity() {
         return city;
     }
@@ -92,7 +95,14 @@ public class Charity extends User {
         this.donations = donations;
     }
 
-    
+    public List<DonorActivity> getActivities() {
+        return activities;
+    }
 
+    public void setActivities(List<DonorActivity> activities) {
+        this.activities = activities;
+    }
+
+    
 }
 
