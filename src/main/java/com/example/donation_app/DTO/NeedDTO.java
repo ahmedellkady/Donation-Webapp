@@ -16,6 +16,7 @@ public class NeedDTO {
     private NeedUrgency urgency;
     private String charityName;
     private String city;
+    private String predictedScore;
     public Long getId() {
         return id;
     }
@@ -69,6 +70,12 @@ public class NeedDTO {
     }
     public void setCity(String city) {
         this.city = city;
+    }
+    public String getPredictedScore() {
+        return predictedScore;
+    }
+    public void setPredictedScore(String predictedScore) {
+        this.predictedScore = predictedScore;
     }
     
 }

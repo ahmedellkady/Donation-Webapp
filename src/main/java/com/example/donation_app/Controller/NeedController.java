@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.donation_app.DTO.NeedDTO;
 import com.example.donation_app.Enum.DonationType;
 import com.example.donation_app.Enum.NeedUrgency;
+import com.example.donation_app.Service.NeedMatchingService;
 import com.example.donation_app.Service.NeedService;
 
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,9 +23,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class NeedController {
 
     private final NeedService needService;
+    private final NeedMatchingService matchingService;
 
-    public NeedController(NeedService needService) {
+    public NeedController(NeedService needService, NeedMatchingService matchingService) {
         this.needService = needService;
+        this.matchingService = matchingService;
     }
 
     @PostMapping("/post/{charityId}")
@@ -86,6 +89,13 @@ public class NeedController {
     @GetMapping("charity/{charityId}")
     public ResponseEntity<List<NeedDTO>> getCharityNeeds(@PathVariable Long charityId) {
         List<NeedDTO> needs = needService.getNeedsForCharity(charityId);
+
+        return ResponseEntity.ok(needs);
+    }
+
+    @GetMapping("/{donorId}/suggested-needs")
+    public ResponseEntity<List<NeedDTO>> getSuggestedNeedsForDonor(@PathVariable Long donorId) {
+        List<NeedDTO> needs = matchingService.getSuggestedNeedsForDonor(donorId);
 
         return ResponseEntity.ok(needs);
     }
