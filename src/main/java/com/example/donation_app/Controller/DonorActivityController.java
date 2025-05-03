@@ -6,6 +6,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.donation_app.DTO.DonorActivityDTO;
 import com.example.donation_app.Service.DonorActivityService;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,9 +24,12 @@ public class DonorActivityController {
     }
 
     @PostMapping("/record")
-    public ResponseEntity<String> recordActivity(@RequestBody DonorActivityDTO dto) {
+    public ResponseEntity<Map<String, String>> recordActivity(@RequestBody DonorActivityDTO dto) {
         donorActivityService.recordActivity(dto);
-        return ResponseEntity.ok("Activity recorded successfully");
+        Map<String, String> response = new HashMap<>();
+        response.put("success", "true");
+        response.put("message", "Activity recorded successfully");
+        return ResponseEntity.ok(response);
     }
 
 }

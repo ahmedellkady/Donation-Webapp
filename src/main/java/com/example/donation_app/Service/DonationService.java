@@ -13,26 +13,30 @@ import com.example.donation_app.Exception.ResourceNotFoundException;
 import com.example.donation_app.Model.Charity;
 import com.example.donation_app.Model.Donation;
 import com.example.donation_app.Model.Donor;
+import com.example.donation_app.Model.Need;
 import com.example.donation_app.Model.Pickup;
 import com.example.donation_app.Repository.CharityRepository;
 import com.example.donation_app.Repository.DonationRepository;
 import com.example.donation_app.Repository.DonorRepository;
+import com.example.donation_app.Repository.NeedRepository;
 import com.example.donation_app.Repository.PickupRepository;
 
 @Service
 public class DonationService {
-    
+
     private final DonationRepository donationRepository;
     private final DonorRepository donorRepository;
     private final CharityRepository charityRepository;
     private final PickupRepository pickupRepository;
+    private final NeedRepository needRepository;
 
     public DonationService(DonationRepository donationRepository, DonorRepository donorRepository,
-            CharityRepository charityRepository, PickupRepository pickupRepository) {
+            CharityRepository charityRepository, PickupRepository pickupRepository, NeedRepository needRepository) {
         this.donationRepository = donationRepository;
         this.donorRepository = donorRepository;
         this.charityRepository = charityRepository;
         this.pickupRepository = pickupRepository;
+        this.needRepository = needRepository;
     }
 
     private PickupDTO mapToPickupDTO(Pickup pickup) {
@@ -54,13 +58,14 @@ public class DonationService {
         dto.setCharityName(donation.getCharity().getName());
         dto.setDonorName(donation.getDonor().getName());
         dto.setPickup(mapToPickupDTO(donation.getPickup()));
-        
+
         return dto;
     }
 
     public DonationDetailsDTO addDonation(Long donorId, CreateDonationDTO dto) {
         Donor donor = donorRepository.findById(donorId).get();
         Charity charity = charityRepository.findById(dto.getCharityId()).get();
+        Need need = needRepository.findById(dto.getNeedId()).get();
 
         Donation donation = new Donation();
         donation.setType(dto.getType());
@@ -81,13 +86,25 @@ public class DonationService {
 
         donationRepository.save(donation);
 
+        decrementNeed(need, dto.getQuantity());
+
         return mapToDetailsDTO(donation);
     }
 
+    private void decrementNeed(Need need, Integer quantity) {
+        need.setQuantity(need.getQuantity() - quantity);
+
+        if (need.getQuantity() == 0) {
+            needRepository.delete(need);
+            return;
+        }
+        
+        needRepository.save(need);
+    }
 
     public DonationDetailsDTO getDonationDetails(Long donationId) {
         Donation donation = donationRepository.findById(donationId)
-        .orElseThrow(() -> new IllegalArgumentException("Donation not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Donation not found"));
 
         return mapToDetailsDTO(donation);
     }
@@ -104,11 +121,11 @@ public class DonationService {
 
     public List<DonationDetailsDTO> getDonationsForCharity(Long charityId) {
         List<Donation> donations = donationRepository.findByCharity(charityRepository.findById(charityId).get());
-        
+
         if (donations.isEmpty()) {
             throw new ResourceNotFoundException("No donations found for this charity");
         }
-        
+
         return donations.stream().map(this::mapToDetailsDTO).collect(Collectors.toList());
     }
 
@@ -121,7 +138,7 @@ public class DonationService {
 
         return mapToDetailsDTO(donations.get(0));
     }
-    
+
     public DonationDetailsDTO confirmPickup(Long donationId) {
         Donation donation = donationRepository.findById(donationId).get();
 
