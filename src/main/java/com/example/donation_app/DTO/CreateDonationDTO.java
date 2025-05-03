@@ -11,6 +11,7 @@ public class CreateDonationDTO {
     private String description;
     private Long charityId;
     private PickupDTO pickup;
+    private Long needId;
     
     public DonationType getType() {
         return type;
@@ -48,6 +49,10 @@ public class CreateDonationDTO {
     public void setPickup(PickupDTO pickup) {
         this.pickup = pickup;
     }
-
-    
+    public Long getNeedId() {
+        return needId;
+    }
+    public void setNeedId(Long needId) {
+        this.needId = needId;
+    }
 }
