@@ -1,14 +1,15 @@
 package com.example.donation_app.DTO;
 
 public class FeedbackDTO {
-    private Long id;
+    private Long donationId;
     private int rating;
     private String comment;
-    public Long getId() {
-        return id;
+    private String forRole;
+    public Long getDonationId() {
+        return donationId;
     }
-    public void setId(Long id) {
-        this.id = id;
+    public void setDonationId(Long donationId) {
+        this.donationId = donationId;
     }
     public int getRating() {
         return rating;
@@ -22,6 +23,10 @@ public class FeedbackDTO {
     public void setComment(String comment) {
         this.comment = comment;
     }
-
-    
+    public String getForRole() {
+        return forRole;
+    }
+    public void setForRole(String forRole) {
+        this.forRole = forRole;
+    }
 }

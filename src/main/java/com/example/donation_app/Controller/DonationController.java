@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.donation_app.DTO.CreateDonationDTO;
 import com.example.donation_app.DTO.DonationDetailsDTO;
+import com.example.donation_app.DTO.PickupDTO;
 import com.example.donation_app.Service.DonationService;
 
 import org.springframework.web.bind.annotation.PathVariable;
@@ -68,5 +69,17 @@ public class DonationController {
     public ResponseEntity<DonationDetailsDTO> cancelDonation(@PathVariable Long donationId) {
         DonationDetailsDTO cancelled = donationService.cancelDonation(donationId);
         return ResponseEntity.ok(cancelled);
+    }
+
+    @GetMapping("/count/{donorId}")
+    public ResponseEntity<Long> getDonationCountForDonor(@PathVariable Long donorId) {
+        Long count = donationService.getDonationCountForDonor(donorId);
+        return ResponseEntity.ok(count);
+    }
+
+    @GetMapping("/latest-pickup/{donorId}")
+    public ResponseEntity<PickupDTO> getLatestPickupForDonor(@PathVariable Long donorId) {
+        PickupDTO pickup = donationService.getLatestPickupForDonor(donorId);
+        return ResponseEntity.ok(pickup);
     }
 }
