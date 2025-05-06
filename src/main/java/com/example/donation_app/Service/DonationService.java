@@ -7,12 +7,14 @@ import org.springframework.stereotype.Service;
 
 import com.example.donation_app.DTO.CreateDonationDTO;
 import com.example.donation_app.DTO.DonationDetailsDTO;
+import com.example.donation_app.DTO.FeedbackDTO;
 import com.example.donation_app.DTO.PickupDTO;
 import com.example.donation_app.Enum.DonationStatus;
 import com.example.donation_app.Exception.ResourceNotFoundException;
 import com.example.donation_app.Model.Charity;
 import com.example.donation_app.Model.Donation;
 import com.example.donation_app.Model.Donor;
+import com.example.donation_app.Model.Feedback;
 import com.example.donation_app.Model.Need;
 import com.example.donation_app.Model.Pickup;
 import com.example.donation_app.Repository.CharityRepository;
@@ -47,6 +49,13 @@ public class DonationService {
         return dto;
     }
 
+    private FeedbackDTO mapToFeedbackDTO(Feedback feedback) {
+        FeedbackDTO dto = new FeedbackDTO();
+        dto.setRating(feedback.getRating());
+        dto.setComment(feedback.getComment());
+        return dto;
+    }
+
     private DonationDetailsDTO mapToDetailsDTO(Donation donation) {
         DonationDetailsDTO dto = new DonationDetailsDTO();
         dto.setId(donation.getId());
@@ -58,6 +67,7 @@ public class DonationService {
         dto.setCharityName(donation.getCharity().getName());
         dto.setDonorName(donation.getDonor().getName());
         dto.setPickup(mapToPickupDTO(donation.getPickup()));
+        dto.setDonorFeedback(donation.getDonorFeedback() != null ? mapToFeedbackDTO(donation.getDonorFeedback()) : null);
 
         return dto;
     }
@@ -110,7 +120,7 @@ public class DonationService {
     }
 
     public List<DonationDetailsDTO> getDonationsForDonor(Long donorId) {
-        List<Donation> donations = donationRepository.findByDonor(donorRepository.findById(donorId).get());
+        List<Donation> donations = donationRepository.findByDonorOrderByPickupDateDesc(donorRepository.findById(donorId).get());
 
         if (donations.isEmpty()) {
             throw new ResourceNotFoundException("No donation found for this donor");
@@ -163,5 +173,23 @@ public class DonationService {
         }
 
         return mapToDetailsDTO(donation);
+    }
+
+    public Long getDonationCountForDonor(Long donorId) {
+        if (donationRepository.countByDonorId(donorId) == null) {
+            throw new ResourceNotFoundException("No donations found for this donor");
+        }
+
+        return donationRepository.countByDonorId(donorId);
+    }
+
+    public PickupDTO getLatestPickupForDonor(Long donorId) {
+        List<Donation> donations = donationRepository.findByDonorIdAndStatusOrderByPickup_ScheduledDateDesc(donorId, DonationStatus.SCHEDULED);
+
+        if (donations.isEmpty()) {
+            throw new ResourceNotFoundException("No pickups found for this donor");
+        }
+
+        return mapToPickupDTO(donations.get(0).getPickup());
     }
 }
