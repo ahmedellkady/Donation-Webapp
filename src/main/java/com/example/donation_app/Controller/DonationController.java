@@ -17,11 +17,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 
-
 @RestController
 @RequestMapping("/api/donations")
 public class DonationController {
-    
+
     private final DonationService donationService;
 
     public DonationController(DonationService donationService) {
@@ -34,7 +33,7 @@ public class DonationController {
         DonationDetailsDTO donation = donationService.addDonation(donorId, dto);
         return ResponseEntity.ok(donation);
     }
-    
+
     @GetMapping("/details/{donationId}")
     public ResponseEntity<DonationDetailsDTO> getDonationDetails(@PathVariable Long donationId) {
         DonationDetailsDTO details = donationService.getDonationDetails(donationId);
@@ -59,9 +58,21 @@ public class DonationController {
         return ResponseEntity.ok(donation);
     }
 
-    @PutMapping("/confirm-pickup/{donationId}")
-    public ResponseEntity<DonationDetailsDTO> confirmPickup(@PathVariable Long donationId) {
-        DonationDetailsDTO confirmed = donationService.confirmPickup(donationId);
+    @PutMapping("/scheduled-pickup/{donationId}")
+    public ResponseEntity<DonationDetailsDTO> pickupScheduled(@PathVariable Long donationId) {
+        DonationDetailsDTO confirmed = donationService.pickupScheduled(donationId);
+        return ResponseEntity.ok(confirmed);
+    }
+
+    @PutMapping("/picked-up-pickup/{donationId}")
+    public ResponseEntity<DonationDetailsDTO> pickupPickedUp(@PathVariable Long donationId) {
+        DonationDetailsDTO confirmed = donationService.pickupPickedUp(donationId);
+        return ResponseEntity.ok(confirmed);
+    }
+
+    @PutMapping("/delivered-pickup/{donationId}")
+    public ResponseEntity<DonationDetailsDTO> pickupDelivered(@PathVariable Long donationId) {
+        DonationDetailsDTO confirmed = donationService.pickupDelivered(donationId);
         return ResponseEntity.ok(confirmed);
     }
 
@@ -82,4 +93,17 @@ public class DonationController {
         PickupDTO pickup = donationService.getLatestPickupForDonor(donorId);
         return ResponseEntity.ok(pickup);
     }
+
+    @GetMapping("/charity/{charityId}/incoming")
+    public ResponseEntity<List<DonationDetailsDTO>> getIncomingDonations(@PathVariable Long charityId) {
+        List<DonationDetailsDTO> donations = donationService.getIncomingDonations(charityId);
+        return ResponseEntity.ok(donations);
+    }
+
+    @GetMapping("/charity/{charityId}/incoming/count")
+    public ResponseEntity<Long> countIncomingDonations(@PathVariable Long charityId) {
+        long count = donationService.countIncomingDonations(charityId);
+        return ResponseEntity.ok(count);
+    }
+
 }

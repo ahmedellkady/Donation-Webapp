@@ -10,7 +10,11 @@ import com.example.donation_app.Model.Need;
 
 public interface NeedRepository extends JpaRepository<Need, Long> {
     
-    List<Need> findByStatus(VerificationStatus status);
+    List<Need> findByStatusOrderByIdDesc(VerificationStatus status);
 
-    List<Need> findByCharity(Charity charity);
+    List<Need> findByCharityOrderByIdDesc(Charity charity);
+
+    List<Need> findByCharityAndStatusOrderByIdDesc(Charity charity, VerificationStatus approved);
+
+    long countByCharityAndStatus(Charity charity, VerificationStatus approved);
 }

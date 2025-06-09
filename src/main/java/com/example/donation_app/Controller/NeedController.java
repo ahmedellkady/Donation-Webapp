@@ -1,7 +1,10 @@
 package com.example.donation_app.Controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +19,7 @@ import com.example.donation_app.Service.NeedService;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
@@ -98,6 +102,33 @@ public class NeedController {
         List<NeedDTO> needs = matchingService.getSuggestedNeedsForDonor(donorId);
 
         return ResponseEntity.ok(needs);
+    }
+
+    @GetMapping("/charity/{charityId}/active")
+    public ResponseEntity<List<NeedDTO>> getActiveNeeds(@PathVariable Long charityId) {
+        List<NeedDTO> needs = needService.getActiveNeedsForCharity(charityId);
+        return ResponseEntity.ok(needs);
+    }
+
+    @GetMapping("/charity/{charityId}/active/count")
+    public ResponseEntity<Long> countActiveNeeds(@PathVariable Long charityId) {
+        long count = needService.countActiveNeedsForCharity(charityId);
+        return ResponseEntity.ok(count);
+    }
+
+    @DeleteMapping("/delete/{needId}")
+    public ResponseEntity<Map<String, Object>> deleteNeed(@PathVariable Long needId) {
+        if (needService.deleteNeed(needId)) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "Need deleted successfully.");
+            response.put("success", true);
+            return ResponseEntity.ok(response);
+        } else {
+            Map<String, Object> error = new HashMap<>();
+            error.put("message", "Need not found.");
+            error.put("success", false);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+        }
     }
 
 }
