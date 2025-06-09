@@ -67,7 +67,8 @@ public class DonationService {
         dto.setCharityName(donation.getCharity().getName());
         dto.setDonorName(donation.getDonor().getName());
         dto.setPickup(mapToPickupDTO(donation.getPickup()));
-        dto.setDonorFeedback(donation.getDonorFeedback() != null ? mapToFeedbackDTO(donation.getDonorFeedback()) : null);
+        dto.setDonorFeedback(
+                donation.getDonorFeedback() != null ? mapToFeedbackDTO(donation.getDonorFeedback()) : null);
 
         return dto;
     }
@@ -108,7 +109,7 @@ public class DonationService {
             needRepository.delete(need);
             return;
         }
-        
+
         needRepository.save(need);
     }
 
@@ -120,7 +121,8 @@ public class DonationService {
     }
 
     public List<DonationDetailsDTO> getDonationsForDonor(Long donorId) {
-        List<Donation> donations = donationRepository.findByDonorOrderByPickupDateDesc(donorRepository.findById(donorId).get());
+        List<Donation> donations = donationRepository
+                .findByDonorOrderByPickupDateDesc(donorRepository.findById(donorId).get());
 
         if (donations.isEmpty()) {
             throw new ResourceNotFoundException("No donation found for this donor");
@@ -149,14 +151,40 @@ public class DonationService {
         return mapToDetailsDTO(donations.get(0));
     }
 
-    public DonationDetailsDTO confirmPickup(Long donationId) {
+    public DonationDetailsDTO pickupScheduled(Long donationId) {
         Donation donation = donationRepository.findById(donationId).get();
 
         if (donation.getStatus() != DonationStatus.PENDING) {
-            throw new IllegalArgumentException("Only Pending donations can be confirmed");
+            throw new IllegalArgumentException("Only Pending donations can be Scheduled");
         }
 
         donation.setStatus(DonationStatus.SCHEDULED);
+        donationRepository.save(donation);
+
+        return mapToDetailsDTO(donation);
+    }
+
+    public DonationDetailsDTO pickupPickedUp(Long donationId) {
+        Donation donation = donationRepository.findById(donationId).get();
+
+        if (donation.getStatus() != DonationStatus.SCHEDULED) {
+            throw new IllegalArgumentException("Only Scheduled donations can be Picked Up");
+        }
+
+        donation.setStatus(DonationStatus.PICKED_UP);
+        donationRepository.save(donation);
+
+        return mapToDetailsDTO(donation);
+    }
+
+    public DonationDetailsDTO pickupDelivered(Long donationId) {
+        Donation donation = donationRepository.findById(donationId).get();
+
+        if (donation.getStatus() != DonationStatus.PICKED_UP) {
+            throw new IllegalArgumentException("Only Picked Up donations can be Delivered");
+        }
+
+        donation.setStatus(DonationStatus.DELIVERED);
         donationRepository.save(donation);
 
         return mapToDetailsDTO(donation);
@@ -184,7 +212,8 @@ public class DonationService {
     }
 
     public PickupDTO getLatestPickupForDonor(Long donorId) {
-        List<Donation> donations = donationRepository.findByDonorIdAndStatusOrderByPickup_ScheduledDateDesc(donorId, DonationStatus.SCHEDULED);
+        List<Donation> donations = donationRepository.findByDonorIdAndStatusOrderByPickup_ScheduledDateDesc(donorId,
+                DonationStatus.SCHEDULED);
 
         if (donations.isEmpty()) {
             throw new ResourceNotFoundException("No pickups found for this donor");
@@ -192,4 +221,27 @@ public class DonationService {
 
         return mapToPickupDTO(donations.get(0).getPickup());
     }
+
+    public List<DonationDetailsDTO> getIncomingDonations(Long charityId) {
+        Charity charity = charityRepository.findById(charityId)
+                .orElseThrow(() -> new ResourceNotFoundException("Charity not found"));
+
+        List<Donation> donations = donationRepository
+                .findByCharityAndStatusIn(charity, List.of(DonationStatus.PENDING, DonationStatus.SCHEDULED, DonationStatus.PICKED_UP));
+
+        if (donations.isEmpty()) {
+            throw new ResourceNotFoundException("No incoming donations found for this charity");
+        }
+
+        return donations.stream().map(this::mapToDetailsDTO).toList();
+    }
+
+    public long countIncomingDonations(Long charityId) {
+        Charity charity = charityRepository.findById(charityId)
+                .orElseThrow(() -> new ResourceNotFoundException("Charity not found"));
+
+        return donationRepository.countByCharityAndStatusIn(charity,
+                List.of(DonationStatus.PENDING, DonationStatus.SCHEDULED));
+    }
+
 }

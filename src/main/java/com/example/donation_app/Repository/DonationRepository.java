@@ -35,4 +35,9 @@ public interface DonationRepository extends JpaRepository<Donation, Long> {
     Long countByDonorId(Long id);
 
     List<Donation> findByDonorIdAndStatusOrderByPickup_ScheduledDateDesc(Long donorId, DonationStatus status);
+
+    List<Donation> findByCharityAndStatusIn(Charity charity, List<DonationStatus> statuses);
+
+    long countByCharityAndStatusIn(Charity charity, List<DonationStatus> statuses);
+
 }
