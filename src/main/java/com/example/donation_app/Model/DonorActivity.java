@@ -3,6 +3,8 @@ package com.example.donation_app.Model;
 import java.time.LocalDateTime;
 
 import com.example.donation_app.Enum.ActionType;
+import com.example.donation_app.Enum.DonationType;
+import com.example.donation_app.Enum.NeedUrgency;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -38,6 +40,16 @@ public class DonorActivity {
     @ManyToOne
     @JoinColumn(name = "session_id")
     private DonorSession session;
+
+    @Enumerated(EnumType.STRING)
+    private DonationType needType;
+
+    @Enumerated(EnumType.STRING)
+    private NeedUrgency needUrgency;
+
+    private Integer quantityDonated;
+
+    private LocalDateTime needCreatedAt;
 
     public Long getId() {
         return id;
@@ -85,6 +97,38 @@ public class DonorActivity {
 
     public void setSession(DonorSession session) {
         this.session = session;
+    }
+
+    public DonationType getNeedType() {
+        return needType;
+    }
+
+    public void setNeedType(DonationType needType) {
+        this.needType = needType;
+    }
+
+    public NeedUrgency getNeedUrgency() {
+        return needUrgency;
+    }
+
+    public void setNeedUrgency(NeedUrgency needUrgency) {
+        this.needUrgency = needUrgency;
+    }
+
+    public Integer getQuantityDonated() {
+        return quantityDonated;
+    }
+
+    public void setQuantityDonated(Integer quantityDonated) {
+        this.quantityDonated = quantityDonated;
+    }
+
+    public LocalDateTime getNeedCreatedAt() {
+        return needCreatedAt;
+    }
+
+    public void setNeedCreatedAt(LocalDateTime needCreatedAt) {
+        this.needCreatedAt = needCreatedAt;
     }
 
     

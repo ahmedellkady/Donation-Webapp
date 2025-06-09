@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import org.springframework.stereotype.Service;
 
 import com.example.donation_app.DTO.DonorActivityDTO;
+import com.example.donation_app.Enum.ActionType;
 import com.example.donation_app.Model.Charity;
 import com.example.donation_app.Model.Donor;
 import com.example.donation_app.Model.DonorActivity;
@@ -52,6 +53,13 @@ public class DonorActivityService {
         activity.setActionType(dto.getActionType());
         activity.setTimestamp(LocalDateTime.now());
         activity.setSession(session);
+        
+        if (dto.getActionType() == ActionType.DONATE) {
+            activity.setNeedType(dto.getNeedType());
+            activity.setNeedUrgency(dto.getNeedUrgency());
+            activity.setQuantityDonated(dto.getQuantityDonated());
+            activity.setNeedCreatedAt(dto.getNeedCreatedAt());
+        }
 
         donorActivityRepository.save(activity);
     }
