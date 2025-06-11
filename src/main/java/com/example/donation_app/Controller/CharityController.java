@@ -11,6 +11,7 @@ import com.example.donation_app.DTO.CharityDTO;
 import com.example.donation_app.DTO.LoginDTO;
 import com.example.donation_app.DTO.RegisterCharityDTO;
 import com.example.donation_app.Enum.DonationType;
+import com.example.donation_app.Service.CharityRecommendationService;
 import com.example.donation_app.Service.CharityService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,9 +24,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class CharityController {
 
     private final CharityService charityService;
+    private final CharityRecommendationService charityRecommendationService;
 
-    public CharityController(CharityService charityService) {
+    public CharityController(CharityService charityService, CharityRecommendationService charityRecommendationService) {
         this.charityService = charityService;
+        this.charityRecommendationService = charityRecommendationService;
     }
 
     @PostMapping("/register")
@@ -91,5 +94,11 @@ public class CharityController {
     public ResponseEntity<String> deleteCharity(@PathVariable Long charityId) {
         charityService.deleteCharity(charityId);
         return ResponseEntity.ok("Charity deleted successfully");
+    }
+
+    @GetMapping("/recommendations/{donorId}")
+    public ResponseEntity<List<CharityDTO>> getRecommendedCharities(@PathVariable Long donorId) {
+        List<CharityDTO> result = charityRecommendationService.getRecommendedCharitiesForDonor(donorId);
+        return ResponseEntity.ok(result);
     }
 }
