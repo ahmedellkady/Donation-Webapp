@@ -40,4 +40,6 @@ public interface DonationRepository extends JpaRepository<Donation, Long> {
 
     long countByCharityAndStatusIn(Charity charity, List<DonationStatus> statuses);
 
+    List<Donation> findByDonor(Donor donor);
+
 }
