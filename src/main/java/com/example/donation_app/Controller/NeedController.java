@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,10 +50,12 @@ public class NeedController {
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<List<NeedDTO>> filterNeeds(
+    public ResponseEntity<Page<NeedDTO>> filterNeeds(
             @RequestParam(required = false) String city,
             @RequestParam(required = false) String category,
-            @RequestParam(required = false) String urgency) {
+            @RequestParam(required = false) String urgency,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
 
         DonationType donationType = null;
         NeedUrgency needUrgency = null;
@@ -59,7 +64,7 @@ public class NeedController {
             try {
                 donationType = DonationType.valueOf(category.toUpperCase());
             } catch (IllegalArgumentException e) {
-                return ResponseEntity.badRequest().body(List.of()); // Invalid category string
+                return ResponseEntity.badRequest().build();
             }
         }
 
@@ -67,17 +72,18 @@ public class NeedController {
             try {
                 needUrgency = NeedUrgency.valueOf(urgency.toUpperCase());
             } catch (IllegalArgumentException e) {
-                return ResponseEntity.badRequest().body(List.of()); // Invalid urgency string
+                return ResponseEntity.badRequest().build();
             }
         }
 
-        List<NeedDTO> needs = needService.filterNeeds(city, donationType, needUrgency);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<NeedDTO> paginatedNeeds = needService.filterNeeds(city, donationType, needUrgency, pageable);
 
-        if (needs.isEmpty()) {
+        if (paginatedNeeds.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
 
-        return ResponseEntity.ok(needs);
+        return ResponseEntity.ok(paginatedNeeds);
     }
 
     @GetMapping("pending-needs")

@@ -2,6 +2,7 @@ package com.example.donation_app.Controller;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -56,27 +57,28 @@ public class CharityController {
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<List<CharityDTO>> filterCharities(
+    public ResponseEntity<Page<CharityDTO>> filterCharities(
             @RequestParam(required = false) String city,
-            @RequestParam(required = false) String category) {
+            @RequestParam(required = false) String category,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
 
         DonationType donationType = null;
-
         if (category != null && !category.isBlank()) {
             try {
-                donationType = DonationType.valueOf(category.toUpperCase()); 
+                donationType = DonationType.valueOf(category.toUpperCase());
             } catch (IllegalArgumentException e) {
-                return ResponseEntity.badRequest().body(List.of());
+                return ResponseEntity.badRequest().build();
             }
         }
 
-        List<CharityDTO> filteredCharities = charityService.filterCharities(city, donationType);
+        Page<CharityDTO> result = charityService.filterCharities(city, donationType, page, size);
 
-        if (filteredCharities.isEmpty()) {
+        if (result.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
 
-        return ResponseEntity.ok(filteredCharities);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/pending")
