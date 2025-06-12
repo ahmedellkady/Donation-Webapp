@@ -104,10 +104,13 @@ public class NeedController {
     }
 
     @GetMapping("/{donorId}/suggested-needs")
-    public ResponseEntity<List<NeedDTO>> getSuggestedNeedsForDonor(@PathVariable Long donorId) {
-        List<NeedDTO> needs = matchingService.getSuggestedNeedsForDonor(donorId);
+    public ResponseEntity<Page<NeedDTO>> getSuggestedNeedsForDonor(
+            @PathVariable Long donorId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
 
-        return ResponseEntity.ok(needs);
+        Page<NeedDTO> pagedNeeds = matchingService.getSuggestedNeedsForDonor(donorId, page, size);
+        return ResponseEntity.ok(pagedNeeds);
     }
 
     @GetMapping("/charity/{charityId}/active")

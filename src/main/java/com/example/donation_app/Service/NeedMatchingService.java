@@ -1,12 +1,17 @@
 package com.example.donation_app.Service;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -43,8 +48,9 @@ public class NeedMatchingService {
         private String predictedScore;
     }
 
-    public List<NeedDTO> getSuggestedNeedsForDonor(Long donorId) {
-        Donor donor = donorRepository.findById(donorId).get();
+    public Page<NeedDTO> getSuggestedNeedsForDonor(Long donorId, int page, int size) {
+        Donor donor = donorRepository.findById(donorId)
+                .orElseThrow(() -> new RuntimeException("Donor not found"));
 
         DonorPredictionRequest requestPayload = new DonorPredictionRequest();
         requestPayload.setDonorCity(donor.getCity());
@@ -52,7 +58,7 @@ public class NeedMatchingService {
         requestPayload.setDonorDonationTypes(donationRepository.findDonorDonationTypesByDonorId(donorId));
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<DonorPredictionRequest> entity = new HttpEntity<>(requestPayload, headers);
         ResponseEntity<FlaskResponse[]> response = restTemplate.postForEntity(
@@ -62,12 +68,16 @@ public class NeedMatchingService {
 
         FlaskResponse[] predictions = response.getBody();
 
+        if (predictions == null || predictions.length == 0) {
+            return new PageImpl<>(Collections.emptyList(), PageRequest.of(page, size), 0);
+        }
+
         Map<Long, String> scoreMap = Arrays.stream(predictions)
                 .collect(Collectors.toMap(p -> p.id, p -> p.predictedScore));
 
         List<Need> needs = needRepository.findAllById(scoreMap.keySet());
 
-        return needs.stream().map(need -> {
+        List<NeedDTO> sortedDtos = needs.stream().map(need -> {
             NeedDTO dto = new NeedDTO();
             dto.setId(need.getId());
             dto.setDescription(need.getDescription());
@@ -83,5 +93,11 @@ public class NeedMatchingService {
             double scoreB = Double.parseDouble(b.getPredictedScore().replace("%", ""));
             return Double.compare(scoreB, scoreA);
         }).toList();
+
+        int start = Math.min(page * size, sortedDtos.size());
+        int end = Math.min(start + size, sortedDtos.size());
+
+        List<NeedDTO> pageContent = sortedDtos.subList(start, end);
+        return new PageImpl<>(pageContent, PageRequest.of(page, size), sortedDtos.size());
     }
 }
