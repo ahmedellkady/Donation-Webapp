@@ -3,6 +3,9 @@ package com.example.donation_app.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.example.donation_app.DTO.CharityDTO;
@@ -91,20 +94,26 @@ public class CharityService {
         return charities.stream().map(this::map).collect(Collectors.toList());
     }
 
-    public List<CharityDTO> filterCharities(String city, DonationType category) {
-        List<Charity> charities = charityRepository.findByStatus(VerificationStatus.APPROVED);
+    public Page<CharityDTO> filterCharities(String city, DonationType category, int page, int size) {
+        List<Charity> allApproved = charityRepository.findByStatus(VerificationStatus.APPROVED);
 
-        List<Charity> filtered = charities.stream()
+        List<Charity> filtered = allApproved.stream()
                 .filter(c -> c != null)
                 .filter(c -> city == null || (c.getCity() != null && c.getCity().equalsIgnoreCase(city)))
-                .filter(c -> category == null
-                        || (c.getPreferredTypes() != null && c.getPreferredTypes().contains(category)))
+                .filter(c -> category == null ||
+                        (c.getPreferredTypes() != null && c.getPreferredTypes().contains(category)))
                 .toList();
 
-        return filtered.stream()
+        List<CharityDTO> mapped = filtered.stream()
                 .filter(c -> c.getName() != null)
                 .map(this::map)
                 .toList();
+
+        int start = Math.min(page * size, mapped.size());
+        int end = Math.min(start + size, mapped.size());
+
+        List<CharityDTO> paged = mapped.subList(start, end);
+        return new PageImpl<>(paged, PageRequest.of(page, size), mapped.size());
     }
 
     public List<CharityDTO> getPendingCharities() {

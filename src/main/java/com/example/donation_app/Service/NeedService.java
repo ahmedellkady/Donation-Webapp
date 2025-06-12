@@ -3,6 +3,8 @@ package com.example.donation_app.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.example.donation_app.DTO.NeedDTO;
@@ -78,18 +80,11 @@ public class NeedService {
         return needs.stream().map(this::map).toList();
     }
 
-    public List<NeedDTO> filterNeeds(String city, DonationType category, NeedUrgency urgency) {
-        List<Need> needs = needRepository.findByStatusOrderByIdDesc(VerificationStatus.APPROVED);
+    public Page<NeedDTO> filterNeeds(String city, DonationType category, NeedUrgency urgency, Pageable pageable) {
+        Page<Need> filtered = needRepository.findFiltered(city, category, urgency, VerificationStatus.APPROVED,
+                pageable);
+        return filtered.map(this::map);
 
-        List<Need> filtered = needs.stream()
-                .filter(n -> n != null)
-                .filter(n -> city == null || (n.getCharity() != null && n.getCharity().getCity() != null
-                        && n.getCharity().getCity().equalsIgnoreCase(city)))
-                .filter(n -> category == null || (n.getType() != null && n.getType().equals(category)))
-                .filter(n -> urgency == null || (n.getUrgency() != null && n.getUrgency().equals(urgency)))
-                .toList();
-
-        return filtered.stream().map(this::map).toList();
     }
 
     public List<NeedDTO> getPendingNeeds() {
@@ -112,7 +107,8 @@ public class NeedService {
         Charity charity = charityRepository.findById(charityId)
                 .orElseThrow(() -> new ResourceNotFoundException("Charity not found"));
 
-        List<Need> activeNeeds = needRepository.findByCharityAndStatusOrderByIdDesc(charity, VerificationStatus.APPROVED);
+        List<Need> activeNeeds = needRepository.findByCharityAndStatusOrderByIdDesc(charity,
+                VerificationStatus.APPROVED);
 
         if (activeNeeds.isEmpty()) {
             throw new ResourceNotFoundException("No active needs found for this charity");
@@ -136,7 +132,7 @@ public class NeedService {
         }
 
         needRepository.delete(need);
-        
+
         return true;
     }
 
