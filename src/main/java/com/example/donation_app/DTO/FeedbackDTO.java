@@ -5,6 +5,8 @@ public class FeedbackDTO {
     private int rating;
     private String comment;
     private String forRole;
+    private int isUrgent;
+    
     public Long getDonationId() {
         return donationId;
     }
@@ -28,5 +30,13 @@ public class FeedbackDTO {
     }
     public void setForRole(String forRole) {
         this.forRole = forRole;
+    }
+
+    public int getIsUrgent() {
+        return isUrgent;
+    }
+
+    public void setIsUrgent(int isUrgent) {
+        this.isUrgent = isUrgent;
     }
 }

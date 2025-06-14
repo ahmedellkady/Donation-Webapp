@@ -23,11 +23,18 @@ public class FeedbackController {
         this.feedbackService = feedbackService;
     }
 
+    // @PostMapping("/submit")
+    // public ResponseEntity<FeedbackDTO> submitFeedback(@RequestBody FeedbackDTO dto) {
+    //     feedbackService.submitFeedback(dto);
+    //     return ResponseEntity.ok(dto);
+    // }
+
     @PostMapping("/submit")
     public ResponseEntity<FeedbackDTO> submitFeedback(@RequestBody FeedbackDTO dto) {
-        feedbackService.submitFeedback(dto);
-        return ResponseEntity.ok(dto);
+        FeedbackDTO savedDto = feedbackService.submitFeedback(dto);
+        return ResponseEntity.ok(savedDto);
     }
+
 
     @GetMapping("/charity/{charityId}/feedbacks")
     public ResponseEntity<List<FeedbackDTO>> getFeedbacksForCharity(@PathVariable Long charityId) {
