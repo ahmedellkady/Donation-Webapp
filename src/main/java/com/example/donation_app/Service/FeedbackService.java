@@ -20,14 +20,9 @@ import com.example.donation_app.Repository.CharityRepository;
 import com.example.donation_app.Repository.DonationRepository;
 import com.example.donation_app.Repository.DonorRepository;
 
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
 import java.util.Map;
 
 

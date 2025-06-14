@@ -12,18 +12,14 @@ import com.example.donation_app.Model.Charity;
 import com.example.donation_app.Model.Donation;
 import com.example.donation_app.Model.Donor;
 import com.example.donation_app.Model.Feedback;
-import com.example.donation_app.Repository.AdminRepository;
 import com.example.donation_app.Repository.CharityRepository;
 import com.example.donation_app.Repository.DonorRepository;
 import com.example.donation_app.Repository.DonationRepository;
 import com.example.donation_app.Repository.FeedbackRepository;
 
-import jakarta.transaction.Transactional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.donation_app.Enum.Role;
-import com.example.donation_app.Enum.VerificationStatus;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -40,7 +36,6 @@ public class AdminService {
     private final FeedbackRepository feedbackRepository;
     
 
-    @Autowired
     public AdminService(DonationRepository donationRepository, DonorRepository donorRepository
     , CharityRepository charityRepository, FeedbackRepository feedbackRepository) {
         this.donationRepository = donationRepository;
