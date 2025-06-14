@@ -1,18 +1,13 @@
 package com.example.donation_app.Controller;
 
 import com.example.donation_app.DTO.DonorDTO;
-import com.example.donation_app.Enum.DonationStatus;
 import com.example.donation_app.DTO.AdminDTO;
 import com.example.donation_app.DTO.CharityDTO;
 import com.example.donation_app.DTO.DonationDetailsDTO;
 import com.example.donation_app.Model.Admin;
-import com.example.donation_app.Model.Donation;
 import com.example.donation_app.Service.AdminService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import com.example.donation_app.DTO.FeedbackDTO;
 
 import java.util.List;
@@ -25,7 +20,6 @@ public class AdminController {
 
     private final AdminService adminService;
 
-    @Autowired
     public AdminController(AdminService adminService) {
         this.adminService = adminService;
     }

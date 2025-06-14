@@ -33,7 +33,7 @@ public class AdminService {
     private final DonationRepository donationRepository;
     private final DonorRepository donorRepository;
     private final CharityRepository charityRepository;
-    private final FeedbackRepository feedbackRepository;
+    // private final FeedbackRepository feedbackRepository;
     
 
     public AdminService(DonationRepository donationRepository, DonorRepository donorRepository
@@ -41,7 +41,7 @@ public class AdminService {
         this.donationRepository = donationRepository;
         this.donorRepository = donorRepository;
         this.charityRepository = charityRepository;
-        this.feedbackRepository = feedbackRepository;
+        // this.feedbackRepository = feedbackRepository;
     }
 
     public void promoteDonorToAdmin(Long donorId) {
@@ -309,7 +309,7 @@ public class AdminService {
 }
 
 public List<FeedbackDTO> getAllFeedbacks() {
-    List<Feedback> feedbacks = feedbackRepository.findAll();
+    // List<Feedback> feedbacks = feedbackRepository.findAll();
     List<Donation> donations = donationRepository.findAll();
 
     List<FeedbackDTO> dtos = new ArrayList<>();
